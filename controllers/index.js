@@ -2,7 +2,7 @@
 
 
 const namefunc = (req, res, next) => {
-    res.send('MYST Drakonoid');
+    res.send('Rebecca Peterson');
 }
 
 const namefunc2 = (req, res, next) => {
