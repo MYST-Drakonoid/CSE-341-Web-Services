@@ -13,3 +13,29 @@ GET https://cse-341-web-services-gn54.onrender.com HTTP/1.1
 
 ###
 GET http://localhost:8080/contacts
+
+### 
+
+GET http://localhost:8080/contacts/6ab78d24c4470def0b468eea
+
+###
+GET http://localhost:8080/contacts/6ab78d32c4470def0b468eec
+
+###
+GET http://localhost:8080/contacts/6ab78d3fc4470def0b468eee
+###
+
+
+GET https://cse-341-web-services-gn54.onrender.com/contacts HTTP/1.1
+
+###
+
+GET https://cse-341-web-services-gn54.onrender.com/contacts/6ab78d24c4470def0b468eea HTTP/1.1
+
+###
+
+GET https://cse-341-web-services-gn54.onrender.com/contacts/6ab78d32c4470def0b468eec HTTP/1.1
+
+###
+
+GET https://cse-341-web-services-gn54.onrender.com/contacts/6ab78d3fc4470def0b468eee HTTP/1.1
