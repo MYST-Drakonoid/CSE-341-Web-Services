@@ -3,3 +3,13 @@ GET http://localhost:3000 HTTP/1.1
 ###
 
 GET http://localhost:3000/real HTTP/1.1
+
+###
+
+GET https://cse-341-web-services-gn54.onrender.com HTTP/1.1
+
+
+// LOCALHOST ### s ### GET http://localhost:8080/contacts/622023f642f9ab4cd6e060b2 ### GET http://localhost:8080/contacts/622023f642f9ab4cd6e060b3 ### GET http://localhost:8080/contacts/622023f642f9ab4cd6e060b4
+
+###
+GET http://localhost:8080/contacts
