@@ -39,3 +39,33 @@ GET https://cse-341-web-services-gn54.onrender.com/contacts/6ab78d32c4470def0b46
 ###
 
 GET https://cse-341-web-services-gn54.onrender.com/contacts/6ab78d3fc4470def0b468eee HTTP/1.1
+
+
+### Create contact
+POST http://localhost:8080/contacts
+Content-Type: application/json
+
+{
+  "firstName": "Anthony",
+  "lastName": "Peterson",
+  "email": "anthony@example.com",
+  "favoriteColor": "Blue",
+  "birthday": "1974-06-28"
+}
+
+
+### Update contact
+PUT http://localhost:8080/contacts/update/6ac3f51ce29b64dbb3a51648
+Content-Type: application/json
+
+{
+  "firstName": "Anthony",
+  "lastName": "Peterson",
+  "email": "anthony@example.com",
+  "favoriteColor": "Green",
+  "birthday": "1974-06-28"
+}
+
+
+### Delete contact
+DELETE http://localhost:8080/contacts/delete/6ac3f3d00fc10c1bb3eb5b8d
