@@ -55,7 +55,7 @@ Content-Type: application/json
 
 
 ### Update contact
-PUT http://localhost:8080/contacts/update/6ac3f51ce29b64dbb3a51648
+PUT http://localhost:8080/contacts/update/6ac4a7c4ad6e3645c8bd424a
 Content-Type: application/json
 
 {
@@ -68,4 +68,33 @@ Content-Type: application/json
 
 
 ### Delete contact
-DELETE http://localhost:8080/contacts/delete/6ac3f3d00fc10c1bb3eb5b8d
+DELETE http://localhost:8080/contacts/delete/6ac4a7c4ad6e3645c8bd424a
+
+### Create contact
+POST https://cse-341-web-services-gn54.onrender.com/contacts
+Content-Type: application/json
+
+{
+  "firstName": "Anthony",
+  "lastName": "Peterson",
+  "email": "anthony@example.com",
+  "favoriteColor": "Blue",
+  "birthday": "1974-06-28"
+}
+
+
+### Update contact
+PUT https://cse-341-web-services-gn54.onrender.com/contacts/update/6ac4a8348e14c3ed0812a008
+Content-Type: application/json
+
+{
+  "firstName": "Anthony",
+  "lastName": "Peterson",
+  "email": "anthony@example.com",
+  "favoriteColor": "Green",
+  "birthday": "1974-06-28"
+}
+
+
+### Delete contact
+DELETE https://cse-341-web-services-gn54.onrender.com/contacts/delete/6ac4a8348e14c3ed0812a008
