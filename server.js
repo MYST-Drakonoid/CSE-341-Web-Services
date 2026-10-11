@@ -2,10 +2,15 @@ import express from 'express';
 import { json } from 'body-parser';
 import { initDb } from './db/connect.js';
 import methodOverride from 'method-override';
+import swaggerUi from 'swagger-ui-express';
+import { readFileSync } from 'node:fs';
 
 const port = process.env.PORT || 8080;
 const app = express();
 
+const swaggerDocument = JSON.parse(
+  readFileSync(new URL('./swagger.json', import.meta.url), 'utf8')
+);
 
 app
   .use(json())
@@ -17,9 +22,11 @@ app
   })
   .use('/', (await import('./routes/index.js')).default)
   .use('/contacts', (await import('./routes/contacts.js')).default)
+  .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
   .use((req, res, next) => {
     res.status(404).json({ message: 'Route not found' });
   });
+  
 
 initDb((err, mongodb) => {
   if (err) {
