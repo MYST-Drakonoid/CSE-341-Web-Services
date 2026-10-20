@@ -4,6 +4,8 @@ import { initDb } from './db/connect.js';
 import methodOverride from 'method-override';
 import swaggerUi from 'swagger-ui-express';
 import { readFileSync } from 'node:fs';
+import inventoryRoutes from './routes/inventory.js';
+import locationRoutes from './routes/locations.js';
 
 const port = process.env.PORT || 8080;
 const app = express();
@@ -20,9 +22,16 @@ app
     res.setHeader('Access-Control-Allow-Origin', '*');
     next();
   })
-  .use('/', (await import('./routes/index.js')).default)
-  .use('/contacts', (await import('./routes/contacts.js')).default)
+
+  // Swagger documentation
   .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
+  // Application routes
+  .use('/', (await import('./routes/index.js')).default)
+  .use('/api/items', inventoryRoutes)
+  .use('/api/locations', locationRoutes)
+
+  // 404 handler
   .use((req, res, next) => {
     res.status(404).json({ message: 'Route not found' });
   });

@@ -1,100 +1,35 @@
-GET http://localhost:3000 HTTP/1.1
 
-###
+@local = http://localhost:8080
+@render = https://YOUR-APP.onrender.com
 
-GET http://localhost:3000/real HTTP/1.1
+### LOCAL - Get All Items
+GET {{local}}/api/items
 
-###
+### LOCAL - Get All Locations
+GET {{local}}/api/locations
 
-GET https://cse-341-web-services-gn54.onrender.com HTTP/1.1
-
-
-// LOCALHOST ### s ### GET http://localhost:8080/contacts/622023f642f9ab4cd6e060b2 ### GET http://localhost:8080/contacts/622023f642f9ab4cd6e060b3 ### GET http://localhost:8080/contacts/622023f642f9ab4cd6e060b4
-
-###
-GET http://localhost:8080/contacts
-
-### 
-
-GET http://localhost:8080/contacts/6ab78d24c4470def0b468eea
-
-###
-GET http://localhost:8080/contacts/6ab78d32c4470def0b468eec
-
-###
-GET http://localhost:8080/contacts/6ab78d3fc4470def0b468eee
-###
-
-
-GET https://cse-341-web-services-gn54.onrender.com/contacts HTTP/1.1
-
-###
-
-GET https://cse-341-web-services-gn54.onrender.com/contacts/6ab78d24c4470def0b468eea HTTP/1.1
-
-###
-
-GET https://cse-341-web-services-gn54.onrender.com/contacts/6ab78d32c4470def0b468eec HTTP/1.1
-
-###
-
-GET https://cse-341-web-services-gn54.onrender.com/contacts/6ab78d3fc4470def0b468eee HTTP/1.1
-
-
-### Create contact
-POST http://localhost:8080/contacts
+### LOCAL - Create Location
+POST {{local}}/api/locations
 Content-Type: application/json
 
 {
-  "firstName": "Anthony",
-  "lastName": "Peterson",
-  "email": "anthony@example.com",
-  "favoriteColor": "Blue",
-  "birthday": "1974-06-28"
+    "name": "Desk",
+    "room": "Office",
+    "notes": null
 }
 
+### RENDER - Get All Items
+GET {{render}}/api/items
 
-### Update contact
-PUT http://localhost:8080/contacts/update/6ac4a7c4ad6e3645c8bd424a
+### RENDER - Get All Locations
+GET {{render}}/api/locations
+
+### RENDER - Create Location
+POST {{render}}/api/locations
 Content-Type: application/json
 
 {
-  "firstName": "Anthony",
-  "lastName": "Peterson",
-  "email": "anthony@example.com",
-  "favoriteColor": "Green",
-  "birthday": "1974-06-28"
+    "name": "Garage Shelf",
+    "room": "Garage",
+    "notes": null
 }
-
-
-### Delete contact
-DELETE http://localhost:8080/contacts/delete/6ac4a7c4ad6e3645c8bd424a
-
-### Create contact
-POST https://cse-341-web-services-gn54.onrender.com/contacts
-Content-Type: application/json
-
-{
-  "firstName": "Anthony",
-  "lastName": "Peterson",
-  "email": "anthony@example.com",
-  "favoriteColor": "Blue",
-  "birthday": "1974-06-28"
-}
-
-
-### Update contact
-PUT https://cse-341-web-services-gn54.onrender.com/contacts/update/6ac4a8348e14c3ed0812a008
-Content-Type: application/json
-
-{
-  "firstName": "Anthony",
-  "lastName": "Peterson",
-  "email": "anthony@example.com",
-  "favoriteColor": "Green",
-  "birthday": "1974-06-28"
-}
-
-
-### Delete contact
-DELETE https://cse-341-web-services-gn54.onrender.com/contacts/delete/6ac4a8348e14c3ed0812a008

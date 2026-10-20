@@ -1,5 +1,5 @@
 {
-  "name": "cse-341-web-services",
+  "name": "cse-341-web-services-Inventory-Management-System",
   "version": "1.0.0",
   "type": "module",
   "description": "",
@@ -9,7 +9,7 @@
     "start": "nodemon server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Anthony Peterson",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^3.1.14"
