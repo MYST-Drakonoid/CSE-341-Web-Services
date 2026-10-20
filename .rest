@@ -1,9 +1,61 @@
 
 @local = http://localhost:8080
-@render = https://YOUR-APP.onrender.com
+@render = https://cse-341-web-services-gn54.onrender.com
+
+
+### LOCAL - Create Location
+POST {{local}}/api/locations
+Content-Type: application/json
+
+{
+    "name": "Desk",
+    "room": "Office",
+    "notes": null
+}
+
+### LOCAL - Create Item
+POST {{local}}/api/items
+Content-Type: application/json
+
+{
+    "name": "Nintendo DSi",
+    "serialNumber": "TW71040796",
+    "type": "Handheld Gaming",
+    "quantity": 1,
+    "locationId": "6ad721b085ae0f053a878e5a",
+    "condition": "Good",
+    "notes": null
+}
+
+### RENDER - Create Location
+POST {{render}}/api/locations
+Content-Type: application/json
+
+{
+    "name": "Garage Shelf",
+    "room": "Garage",
+    "notes": null
+}
+
+### RENDER - Create Item
+POST {{render}}/api/items
+Content-Type: application/json
+
+{
+    "name": "Nintendo DSi",
+    "serialNumber": "TW71040796",
+    "type": "Handheld Gaming",
+    "quantity": 1,
+    "locationId": "6ad721bfdcc9b0dff5bc205f",
+    "condition": "Good",
+    "notes": null
+}
+
 
 ### LOCAL - Get All Items
 GET {{local}}/api/items
+
+
 
 ### LOCAL - Get All Locations
 GET {{local}}/api/locations
