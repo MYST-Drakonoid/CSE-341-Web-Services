@@ -21,11 +21,8 @@
     }
   ],
   "paths": {
-    "/api-docs/": {
+    "/api/inventory/": {
       "get": {
-        "tags": [
-          "Locations"
-        ],
         "description": "",
         "responses": {
           "200": {
@@ -34,9 +31,6 @@
         }
       },
       "post": {
-        "tags": [
-          "Locations"
-        ],
         "description": "",
         "responses": {
           "201": {
@@ -54,18 +48,15 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LocationInput"
+                "$ref": "#/components/schemas/ItemInput"
               }
             }
           }
         }
       }
     },
-    "/api-docs/serial/{serialNumber}": {
+    "/api/inventory/serial/{serialNumber}": {
       "get": {
-        "tags": [
-          "Items"
-        ],
         "description": "",
         "parameters": [
           {
@@ -90,11 +81,8 @@
         }
       }
     },
-    "/api-docs/{id}": {
+    "/api/inventory/{id}": {
       "get": {
-        "tags": [
-          "Items"
-        ],
         "description": "",
         "parameters": [
           {
@@ -119,9 +107,97 @@
         }
       },
       "put": {
-        "tags": [
-          "Locations"
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemInput"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/locations/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocationInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/locations/{id}": {
+      "put": {
         "description": "",
         "parameters": [
           {
@@ -152,33 +228,6 @@
                 "$ref": "#/components/schemas/LocationInput"
               }
             }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Items"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }

@@ -23,16 +23,18 @@ app
     next();
   })
 
-  // Swagger documentation
+  // Swagger interface
   .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
-  // Application routes
-  .use('/', (await import('./routes/index.js')).default)
-  .use('/api/items', inventoryRoutes)
+  // API routes
+  .use('/api/inventory', inventoryRoutes)
   .use('/api/locations', locationRoutes)
 
-  // 404 handler
-  .use((req, res, next) => {
+  // Original root routes
+  .use('/', (await import('./routes/index.js')).default)
+
+  // Handle missing routes
+  .use((req, res) => {
     res.status(404).json({ message: 'Route not found' });
   });
   
