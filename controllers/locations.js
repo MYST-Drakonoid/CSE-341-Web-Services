@@ -1,4 +1,5 @@
 import * as MongoDB from '../db/connect.js';
+import { ObjectId } from 'mongodb';
 
 // GET all locations
 const getAll = async (req, res, next) => {
@@ -101,10 +102,37 @@ const updateLocation = async (req, res, next) => {
         next(error);
     }
 };
-    
+
+const deleteLocation = async (req, res, next) => {
+    try {
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                message: 'Invalid location ID.'
+            });
+        }
+
+        const locationId = new ObjectId(req.params.id);
+
+        const result = await MongoDB.getDb()
+            .collection('locations')
+            .deleteOne({ _id: locationId });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({
+                message: 'Location not found.'
+            });
+        }
+
+        res.status(204).send();
+
+    } catch (error) {
+        next(error);
+    }
+};
 
 export default {
     getAll,
     createLocation,
-    updateLocation
+    updateLocation,
+    deleteLocation
 };

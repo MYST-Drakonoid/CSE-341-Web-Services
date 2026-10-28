@@ -35,4 +35,6 @@ router.put('/:id', (req, res, next) => {
     return locationsController.updateLocation(req, res, next);
 });
 
+router.delete('/:id', locationsController.deleteLocation);
+
 export default router;
