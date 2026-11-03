@@ -1,7 +1,10 @@
 import express from 'express';
 import itemsController from '../controllers/inventory.js';
+import requireAuth from '../middleware/requireApiAuth.js';
 
 const router = express.Router();
+
+router.use(requireAuth); // Apply authentication middleware to all routes
 
 router.get('/', itemsController.getAll);
 

@@ -2,6 +2,7 @@
 import * as MongoDB from '../db/connect.js';
 import { ObjectId } from 'mongodb';
 
+
 // Validate inventory item information
 const validateItem = (item) => {
     if (!item || typeof item !== 'object' || Array.isArray(item)) {

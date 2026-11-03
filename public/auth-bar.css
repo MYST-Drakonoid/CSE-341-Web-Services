@@ -1,0 +1,43 @@
+
+#auth-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 24px;
+    background: #172637;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+#auth-bar a {
+    text-decoration: none;
+    color: white;
+}
+
+#auth-bar .auth-brand {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#auth-bar .auth-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+#auth-button {
+    background: #f1f5f9;
+    color: #172637 !important;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+#auth-button:hover {
+    background: #cbd5e1;
+}

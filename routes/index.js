@@ -1,10 +1,29 @@
+// import express from 'express';
+// import * as myController from '../controllers/index.js';
+
+// const routes = express.Router();
+
+// routes.get('/', myController.namefunc);
+
+// routes.get('/real', myController.namefunc2);
+
+// export default routes;
+
 import express from 'express';
-import * as myController from '../controllers/index.js';
 
-const routes = express.Router();
+const router = express.Router();
 
-routes.get('/', myController.namefunc);
 
-routes.get('/real', myController.namefunc2);
+router.get('/', (req, res) => {
+    if (req.oidc?.isAuthenticated()) {
+        res.redirect('/api-docs/');
+    } else {
+        res.redirect('/login');
+    }
+});
 
-export default routes;
+router.get('/', (req, res) => {
+    res.redirect('/api-docs/');
+});
+
+export default router;

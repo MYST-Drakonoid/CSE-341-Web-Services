@@ -85,3 +85,16 @@ Content-Type: application/json
     "room": "Garage",
     "notes": null
 }
+
+
+### LOCAL - Delete Inventory Item
+DELETE {{local}}/api/items/YOUR_ITEM_ID
+
+### LOCAL - Delete Location
+DELETE {{local}}/api/locations/YOUR_LOCATION_ID
+
+### RENDER - Delete Inventory Item
+DELETE {{render}}/api/items/YOUR_ITEM_ID
+
+### RENDER - Delete Location
+DELETE {{render}}/api/locations/YOUR_LOCATION_ID

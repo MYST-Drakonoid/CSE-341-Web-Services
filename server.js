@@ -6,13 +6,50 @@ import swaggerUi from 'swagger-ui-express';
 import { readFileSync } from 'node:fs';
 import inventoryRoutes from './routes/inventory.js';
 import locationRoutes from './routes/locations.js';
+import pkg from 'express-openid-connect';
+
+const { auth, requiresAuth } = pkg;
 
 const port = process.env.PORT || 8080;
 const app = express();
 
+// Trust Render's HTTPS reverse proxy in production
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+}
+  
+// Initialize Auth0 authentication
+app.use(auth({
+    authRequired: false,
+    auth0Logout: true,
+    secret: process.env.SESSION_SECRET,
+    baseURL: process.env.BASE_URL,
+    clientID: process.env.AUTH0_CLIENT_ID,
+    clientSecret: process.env.AUTH0_CLIENT_SECRET,
+    issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL
+}));
+
+app.get('/auth/status', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store');
+
+    res.status(200).json({
+        authenticated: req.oidc.isAuthenticated()
+    });
+});
+
+app.use(express.static('public'));
+
 const swaggerDocument = JSON.parse(
   readFileSync(new URL('./swagger.json', import.meta.url), 'utf8')
 );
+
+app.get('/profile', requiresAuth(), (req, res) => {
+    res.status(200).json({
+        message: 'Authentication successful',
+        name: req.oidc.user.name,
+        email: req.oidc.user.email
+    });
+});
 
 app
   .use(json())
@@ -24,7 +61,10 @@ app
   })
 
   // Swagger interface
-  .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+  .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
+    customJs: '/auth-bar.js',
+    customCssUrl: '/auth-bar.css'
+  }))
 
   // API routes
   .use('/api/inventory', inventoryRoutes)
