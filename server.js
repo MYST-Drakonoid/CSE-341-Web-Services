@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'production') {
   
 // Initialize Auth0 authentication
 app.use(auth({
-    authRequired: false,
+    authRequired: true,
     auth0Logout: true,
     secret: process.env.SESSION_SECRET,
     baseURL: process.env.BASE_URL,
