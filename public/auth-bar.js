@@ -17,6 +17,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.body.prepend(nav);
 
+    
+    // Simple API overview panel
+    const overview = document.createElement('section');
+    overview.id = 'api-overview';
+
+    overview.innerHTML = `
+        <h1>Household Inventory Tracker</h1>
+        <p>
+            A REST API for managing household inventory,
+            tracking items, and organizing storage locations.
+        </p>
+        <div class="overview-details">
+            <span>Node.js & Express</span>
+            <span>MongoDB</span>
+            <span>Auth0 Authentication</span>
+        </div>
+        <p class="overview-help">
+            Select an endpoint below, click
+            <strong>Try it out</strong>, then
+            <strong>Execute</strong> to test the API.
+        </p>
+    `;
+
+    nav.insertAdjacentElement('afterend', overview);
+
+
     const authButton = document.getElementById('auth-button');
 
     try {

@@ -62,8 +62,15 @@ app
 
   // Swagger interface
   .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
-    customJs: '/auth-bar.js',
-    customCssUrl: '/auth-bar.css'
+      customJs: [
+          '/auth-bar.js',
+          '/inventory-editor.js'
+      ],
+      customCssUrl: [
+          '/auth-bar.css',
+          '/inventory-editor.css'
+      ],
+      customSiteTitle: 'Household Inventory Tracker'
   }))
 
   // API routes

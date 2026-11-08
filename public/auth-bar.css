@@ -41,3 +41,63 @@
 #auth-button:hover {
     background: #cbd5e1;
 }
+
+
+/* API Overview Panel */
+#api-overview {
+    background: #f1f5f9;
+    border-bottom: 1px solid #cbd5e1;
+    padding: 28px 36px;
+    font-family: Arial, sans-serif;
+    color: #172637;
+}
+
+#api-overview h1 {
+    margin: 0 0 10px;
+    font-size: 28px;
+}
+
+#api-overview p {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.overview-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 18px 0;
+}
+
+.overview-details span {
+    background: #dce6f0;
+    padding: 7px 12px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#api-overview .overview-help {
+    font-size: 13px;
+    color: #475569;
+}
+
+/* Keep Swagger clean */
+.swagger-ui .topbar {
+    display: none;
+}
+
+.swagger-ui .opblock {
+    border-radius: 6px;
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+    #api-overview {
+        padding: 20px;
+    }
+
+    #api-overview h1 {
+        font-size: 23px;
+    }
+}

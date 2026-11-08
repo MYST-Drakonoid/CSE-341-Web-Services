@@ -112,6 +112,7 @@ const updateLocation = async (req, res, next) => {
 
 const deleteLocation = async (req, res, next) => {
     try {
+        // Validate location ID
         if (!ObjectId.isValid(req.params.id)) {
             return res.status(400).json({
                 message: 'Invalid location ID.'
@@ -119,9 +120,31 @@ const deleteLocation = async (req, res, next) => {
         }
 
         const locationId = new ObjectId(req.params.id);
+        const db = MongoDB.getDb();
 
-        const result = await MongoDB.getDb()
-            .collection('locations')
+        // Check whether the location exists
+        const location = await db.collection('locations')
+            .findOne({ _id: locationId });
+
+        if (!location) {
+            return res.status(404).json({
+                message: 'Location not found.'
+            });
+        }
+
+        // Check whether inventory items reference this location
+        const itemCount = await db.collection('items')
+            .countDocuments({ locationId: locationId });
+
+        if (itemCount > 0) {
+            return res.status(409).json({
+                message: 'Cannot delete a location containing inventory items.',
+                itemsFound: itemCount
+            });
+        }
+
+        // Delete the location
+        const result = await db.collection('locations')
             .deleteOne({ _id: locationId });
 
         if (result.deletedCount === 0) {
