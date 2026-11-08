@@ -73,11 +73,27 @@ app
   // Original root routes
   .use('/', (await import('./routes/index.js')).default)
 
+
   // Handle missing routes
   .use((req, res) => {
-    res.status(404).json({ message: 'Route not found' });
+    res.status(404).json({
+      message: 'Route not found'
+    });
+  })
+
+  // Centralized error handling
+  .use((err, req, res, next) => {
+    console.error('API Error:', err);
+
+    const status = err.status || err.statusCode || 500;
+    const code = status >= 400 && status <= 599 ? status : 500;
+
+    res.status(code).json({
+      message: code >= 500
+        ? 'Internal server error.'
+        : err.message
+    });
   });
-  
 
 initDb((err, mongodb) => {
   if (err) {

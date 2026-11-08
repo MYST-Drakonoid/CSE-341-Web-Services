@@ -25,6 +25,13 @@ const createLocation = async (req, res, next) => {
             });
         }
 
+        if ((req.body.room != null && typeof req.body.room !== 'string') ||
+            (req.body.notes != null && typeof req.body.notes !== 'string')) {
+            return res.status(400).json({
+                message: 'Room and notes must be strings or null.'
+            });
+}
+
         const location = {
             name: req.body.name.trim(),
             room: req.body.room ?? null,
