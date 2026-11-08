@@ -65,7 +65,7 @@
     if (anchor) anchor.insertAdjacentElement('afterend', panel);
     else document.body.prepend(panel);
 
-    // Place read-only collection tables after the Swagger documentation, at the page bottom.
+    // Place read-only collection tables between the editor and Swagger documentation.
     const recordsPanel = document.createElement('section');
     recordsPanel.id = 'inventory-records';
     recordsPanel.setAttribute('aria-label', 'Current inventory and locations');
@@ -106,7 +106,7 @@
         </div>
       </section>
     `;
-    document.body.appendChild(recordsPanel);
+    panel.insertAdjacentElement('afterend', recordsPanel);
 
     const get = (id) => panel.querySelector(`#${id}`);
     const getRecords = (id) => recordsPanel.querySelector(`#${id}`);
