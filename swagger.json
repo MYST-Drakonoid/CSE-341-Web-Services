@@ -21,7 +21,7 @@
     }
   ],
   "paths": {
-    "/api/inventory/": {
+    "/auth/status": {
       "get": {
         "description": "",
         "responses": {
@@ -29,6 +29,29 @@
             "description": "OK"
           }
         }
+      }
+    },
+    "/profile": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/inventory/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "Items"
+        ]
       },
       "post": {
         "description": "",
@@ -52,7 +75,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "Items"
+        ]
       }
     },
     "/api/inventory/serial/{serialNumber}": {
@@ -78,7 +104,10 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "tags": [
+          "Items"
+        ]
       }
     },
     "/api/inventory/{id}": {
@@ -104,7 +133,10 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "tags": [
+          "Items"
+        ]
       },
       "put": {
         "description": "",
@@ -138,7 +170,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "Items"
+        ]
       },
       "delete": {
         "description": "",
@@ -162,7 +197,10 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "tags": [
+          "Items"
+        ]
       }
     },
     "/api/locations/": {
@@ -172,7 +210,10 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": [
+          "Locations"
+        ]
       },
       "post": {
         "description": "",
@@ -193,7 +234,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "Locations"
+        ]
       }
     },
     "/api/locations/{id}": {
@@ -229,7 +273,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "Locations"
+        ]
       },
       "delete": {
         "description": "",
@@ -252,8 +299,14 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "409": {
+            "description": "Location contains inventory items."
           }
-        }
+        },
+        "tags": [
+          "Locations"
+        ]
       }
     }
   },
