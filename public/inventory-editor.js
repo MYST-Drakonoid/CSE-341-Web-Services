@@ -1,5 +1,5 @@
-/* Simple create/update/delete editor for the existing Household Inventory API.
-   This script runs on the Swagger UI page; it uses the current Auth0 session. */
+/* Create/update/delete editor and live collection tables for Household Inventory.
+   The tables refresh every 30 seconds while the page is visible. */
 (() => {
   function start() {
     if (document.getElementById('inventory-editor')) return;
@@ -65,7 +65,51 @@
     if (anchor) anchor.insertAdjacentElement('afterend', panel);
     else document.body.prepend(panel);
 
+    // Place read-only collection tables after the Swagger documentation, at the page bottom.
+    const recordsPanel = document.createElement('section');
+    recordsPanel.id = 'inventory-records';
+    recordsPanel.setAttribute('aria-label', 'Current inventory and locations');
+    recordsPanel.innerHTML = `
+      <div class="inventory-records-heading">
+        <div>
+          <h2>Current Database Records</h2>
+          <p>Live view of the <strong>items</strong> and <strong>locations</strong> MongoDB collections.</p>
+        </div>
+        <button type="button" id="inventory-records-refresh">Refresh Now</button>
+      </div>
+      <p id="inventory-records-status" class="inventory-records-status" role="status" aria-live="polite">
+        Loading records…
+      </p>
+      <section aria-labelledby="inventory-items-title">
+        <h3 id="inventory-items-title">Inventory Items <span id="inventory-items-count"></span></h3>
+        <div class="inventory-records-scroll">
+          <table>
+            <thead><tr>
+              <th scope="col">Name</th><th scope="col">Type</th>
+              <th scope="col">Quantity</th><th scope="col">Serial number</th>
+              <th scope="col">Location</th><th scope="col">Condition</th>
+            </tr></thead>
+            <tbody id="inventory-items-rows"><tr><td colspan="6">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+      <section aria-labelledby="inventory-locations-title">
+        <h3 id="inventory-locations-title">Locations <span id="inventory-locations-count"></span></h3>
+        <div class="inventory-records-scroll">
+          <table>
+            <thead><tr>
+              <th scope="col">Name</th><th scope="col">Room</th>
+              <th scope="col">Assigned items</th><th scope="col">Notes</th>
+            </tr></thead>
+            <tbody id="inventory-locations-rows"><tr><td colspan="4">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    `;
+    document.body.appendChild(recordsPanel);
+
     const get = (id) => panel.querySelector(`#${id}`);
+    const getRecords = (id) => recordsPanel.querySelector(`#${id}`);
     const state = { inventory: [], locations: [] };
     const collection = get('editor-collection');
     const mode = get('editor-mode');
@@ -75,6 +119,8 @@
     const submit = get('inventory-editor-submit');
     const deleteSummary = get('editor-delete-summary');
     const status = get('inventory-editor-status');
+    let loadingPromise = null;
+    let mutationInProgress = false;
 
     function showStatus(message, isError = false) {
       status.textContent = message;
@@ -130,23 +176,89 @@
       );
     }
 
-    async function reload() {
-      showStatus('Loading records...');
-      try {
-        const [items, locations] = await Promise.all([
-          api('/api/inventory'),
-          api('/api/locations')
-        ]);
-        if (!Array.isArray(items) || !Array.isArray(locations)) {
-          throw new Error('API did not return record lists.');
-        }
-        state.inventory = items;
-        state.locations = locations;
-        refreshDropdowns();
-        showStatus(`Loaded ${items.length} items and ${locations.length} locations.`);
-      } catch (error) {
-        showStatus(`Could not load records: ${error.message}`, true);
+    // Build table rows with textContent, never with database content in innerHTML.
+    function writeRows(body, records, columns, emptyMessage) {
+      body.replaceChildren();
+      if (!records.length) {
+        const row = body.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = columns.length;
+        cell.textContent = emptyMessage;
+        cell.className = 'inventory-records-empty';
+        return;
       }
+      [...records]
+        .sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')))
+        .forEach(record => {
+          const row = body.insertRow();
+          for (const getValue of columns) {
+            const value = getValue(record);
+            const cell = row.insertCell();
+            cell.textContent = value === null || value === undefined || value === '' ? '—' : String(value);
+          }
+        });
+    }
+
+    function renderRecordTables() {
+      const locationById = new Map(state.locations.map(x => [String(x._id), x]));
+      const assignedCounts = new Map();
+      for (const item of state.inventory) {
+        const id = String(item.locationId ?? '');
+        assignedCounts.set(id, (assignedCounts.get(id) || 0) + 1);
+      }
+      const locationName = item => {
+        const linked = locationById.get(String(item.locationId ?? ''));
+        return linked ? linked.name : 'Unknown location';
+      };
+      writeRows(getRecords('inventory-items-rows'), state.inventory, [
+        x => x.name, x => x.type, x => x.quantity,
+        x => x.serialNumber, locationName, x => x.condition
+      ], 'No inventory items found.');
+      writeRows(getRecords('inventory-locations-rows'), state.locations, [
+        x => x.name, x => x.room,
+        x => assignedCounts.get(String(x._id)) || 0,
+        x => x.notes
+      ], 'No locations found.');
+      getRecords('inventory-items-count').textContent = `(${state.inventory.length})`;
+      getRecords('inventory-locations-count').textContent = `(${state.locations.length})`;
+    }
+
+    // Shared fetch for dropdowns and tables. Only one refresh request can run at a time.
+    function reload({ quiet = false } = {}) {
+      if (loadingPromise) return loadingPromise;
+      if (!quiet) showStatus('Loading records...');
+      const tableStatus = getRecords('inventory-records-status');
+      const refreshButton = getRecords('inventory-records-refresh');
+      tableStatus.textContent = 'Refreshing records…';
+      tableStatus.classList.remove('error');
+      refreshButton.disabled = true;
+      loadingPromise = (async () => {
+        try {
+          const [items, locations] = await Promise.all([
+            api('/api/inventory'),
+            api('/api/locations')
+          ]);
+          if (!Array.isArray(items) || !Array.isArray(locations)) {
+            throw new Error('API did not return record lists.');
+          }
+          state.inventory = items;
+          state.locations = locations;
+          refreshDropdowns();
+          renderRecordTables();
+          const updated = new Date().toLocaleTimeString();
+          tableStatus.textContent = `Last updated: ${updated} • Automatic refresh every 30 seconds while this tab is visible.`;
+          if (!quiet) showStatus(`Loaded ${items.length} items and ${locations.length} locations.`);
+          return true;
+        } catch (error) {
+          tableStatus.textContent = `Refresh failed: ${error.message}. Previous results are still shown, if available.`;
+          tableStatus.classList.add('error');
+          if (!quiet) showStatus(`Could not load records: ${error.message}`, true);
+          return false;
+        } finally {
+          refreshButton.disabled = false;
+        }
+      })();
+      return loadingPromise.finally(() => { loadingPromise = null; });
     }
 
     function clearForm() {
@@ -252,7 +364,15 @@
         showStatus('Choose an existing record from the dropdown.');
       }
     });
-    get('inventory-editor-reload').addEventListener('click', reload);
+    get('inventory-editor-reload').addEventListener('click', () => reload());
+    getRecords('inventory-records-refresh').addEventListener('click', () => reload({ quiet: true }));
+    // Do not refresh an inactive browser tab or interrupt a write in progress.
+    window.setInterval(() => {
+      if (!document.hidden && !mutationInProgress) reload({ quiet: true });
+    }, 30000);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && !mutationInProgress) reload({ quiet: true });
+    });
 
     form.addEventListener('submit', async event => {
       event.preventDefault();
@@ -278,6 +398,7 @@
           return;
         }
         submit.disabled = true;
+        mutationInProgress = true;
         showStatus('Deleting...');
         try {
           await api(`${path}/${encodeURIComponent(id)}`, { method: 'DELETE' });
@@ -289,6 +410,7 @@
           showStatus(`Delete failed: ${error.message}`, true);
         } finally {
           submit.disabled = false;
+          mutationInProgress = false;
         }
         return;
       }
@@ -308,6 +430,7 @@
       }
 
       submit.disabled = true;
+      mutationInProgress = true;
       showStatus(editing ? 'Updating...' : 'Creating...');
       try {
         const result = await api(editing ? `${path}/${encodeURIComponent(id)}` : path, {
@@ -327,6 +450,7 @@
         showStatus(`Save failed: ${error.message}`, true);
       } finally {
         submit.disabled = false;
+        mutationInProgress = false;
       }
     });
 

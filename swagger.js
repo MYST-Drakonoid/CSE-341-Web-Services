@@ -1,5 +1,6 @@
 
 import swaggerAutogen from 'swagger-autogen';
+import { readFileSync, writeFileSync } from 'node:fs';
 
 const doc = {
     info: {
@@ -95,3 +96,37 @@ await swaggerAutogen({ openapi: '3.0.0' })(
     endpointsFiles,
     doc
 );
+
+
+const spec = JSON.parse(readFileSync(outputFile, 'utf8'));
+
+for (const [path, operations] of Object.entries(spec.paths || {})) {
+    let tag;
+
+    if (path.startsWith('/api/inventory')) {
+        tag = 'Items';
+    } else if (path.startsWith('/api/locations')) {
+        tag = 'Locations';
+    } else {
+        continue;
+    }
+
+    for (const method of ['get', 'post', 'put', 'delete', 'patch']) {
+        if (operations[method]) {
+            operations[method].tags = [tag];
+        }
+    }
+}
+
+// Document location deletion conflict
+const deleteLocation = spec.paths?.['/api/locations/{id}']?.delete;
+
+if (deleteLocation) {
+    deleteLocation.responses ||= {};
+    deleteLocation.responses['409'] = {
+        description: 'Location contains inventory items.'
+    };
+}
+
+writeFileSync(outputFile, JSON.stringify(spec, null, 2) + '\n');
+

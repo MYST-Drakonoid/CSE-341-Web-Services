@@ -60,19 +60,21 @@ app
     next();
   })
 
-  // Swagger interface
-  .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
+.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
     customJs: [
-      '/auth-bar.js',
-      '/inventory-editor.js'
+        '/auth-bar.js',
+        '/inventory-editor.js'
     ],
     customCssUrl: [
-      '/auth-bar.css',
-      '/inventory-editor.css'
+        '/auth-bar.css',
+        '/inventory-editor.css'
     ],
-    customSiteTitle: 'Household Inventory Tracker'
-  }))
-
+    customSiteTitle: 'Household Inventory Tracker',
+    swaggerOptions: {
+        docExpansion: 'none',
+        defaultModelsExpandDepth: -1
+    }
+}))
   // API routes
   .use('/api/inventory', inventoryRoutes)
   .use('/api/locations', locationRoutes)
